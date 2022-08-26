@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity() {
                 binding.imagePreview.setImageURI(photoUri)
             }
         }
+
+        storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
     fun setViews() {
