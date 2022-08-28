@@ -14,11 +14,12 @@ import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
-    val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     lateinit var cameraPermission: ActivityResultLauncher<String>
     lateinit var storagePermission: ActivityResultLauncher<String>
     lateinit var cameraLauncher: ActivityResultLauncher<Uri>
+    lateinit var galleryLauncher: ActivityResultLauncher<String>
 
     var photoUri:Uri? = null
 
@@ -49,16 +50,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
+            binding.imagePreview.setImageURI(it)
+        }
+
         storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
-    fun setViews() {
+    private fun setViews() {
         binding.cameraBtn.setOnClickListener {
             cameraPermission.launch(Manifest.permission.CAMERA)
         }
+
+        binding.buttonGallery.setOnClickListener {
+            openGallery()
+        }
     }
 
-    fun openCamera() {
+    private fun openCamera() {
         val photoFile = File.createTempFile(
             "IMG_",
         ".jpg",
@@ -70,5 +79,9 @@ class MainActivity : AppCompatActivity() {
         )
 
         cameraLauncher.launch(photoUri)
+    }
+
+    private fun openGallery() {
+        galleryLauncher.launch("image/*")
     }
 }
